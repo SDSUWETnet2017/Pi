@@ -82,7 +82,7 @@ def read_BME(sensor_BME):
 	BME_280 uses I2C
 	"""
 
-	h = sensor_BME.read_temperature()
+	h = sensor_BME.read_humidity()
         p = sensor_BME.read_pressure()
         t = sensor_BME.read_temperature()
 	
