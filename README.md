@@ -1,4 +1,8 @@
 # Pi
+
+required packages: pandas, numpy, scipy
+
+
 run gen_data.py to generate test_data.json every 10 min
 temperature in degrees F
 pressure in Pa
