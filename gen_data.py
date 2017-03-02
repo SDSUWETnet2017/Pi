@@ -14,7 +14,7 @@ data comming in from nodes
 import time
 from node import Node
 import json
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 latitudes = [32.775660,32.776315,32.776075,32.775567,32.775881,32.776689,
                  32.776804,32.776898,32.775683,32.774507]
@@ -43,7 +43,7 @@ nodes = []
 #
 ''' Use this code to generate a single time instance every 10 minutes'''
 #refresh time in minutes
-refresh_time = 9.4
+refresh_time = 10
 
 start_time = 0
 
