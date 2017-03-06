@@ -8,8 +8,9 @@ from time import sleep
 import time
 import base64
 from Adafruit_BME280 import *
+import SI1145.SI1145 as SI1145
 
-
+ 
 def take_pic(camera,filename='/home/pi/TEST.jpg',
 	location='test location',resolution=(600,600),
 	brightness=50,rotation=0):
@@ -87,3 +88,16 @@ def read_BME(sensor_BME):
         t = sensor_BME.read_temperature()
 	
 	return h,p,t
+
+def get_UV(uv_sensor):
+	'''
+	a function that returns the UV index as read by the 
+	SI1145 using i2c
+	
+	initialization for sensor needed before calling function
+	uv_sensor = SI1145.SI145()
+	'''
+
+	uv = uv_sensor.readUV()
+	uv /= 100.0
+	return uv
