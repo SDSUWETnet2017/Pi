@@ -8,7 +8,7 @@ from time import sleep
 import time
 import base64
 from Adafruit_BME280 import *
-import SI1145.SI1145 as SI1145
+import SI1145 as SI1145
 
  
 def take_pic(camera,filename='/home/pi/TEST.jpg',
@@ -28,6 +28,7 @@ def take_pic(camera,filename='/home/pi/TEST.jpg',
 	"""
 
 	# Create timestamp
+	'''
 	timestruct = time.localtime()
 	timestamp = str(timestruct[0]) + '-' + str(timestruct[1])
 	timestamp += '-' + str(timestruct[2]) + ' ' +  str(timestruct[3])
@@ -35,7 +36,7 @@ def take_pic(camera,filename='/home/pi/TEST.jpg',
 	        timestamp += ':0' + str(timestruct[4])
 	else:
 		 timestamp += ':' + str(timestruct[4])	
-
+	'''
 	# set size of image
 	camera.resolution = resolution
 	# rotate image
@@ -43,14 +44,14 @@ def take_pic(camera,filename='/home/pi/TEST.jpg',
 	camera.start_preview()
 	camera.brightness = brightness
 	# Put timestamp on pic
-	camera.annotate_text = location + ' ' + timestamp
+	#camera.annotate_text = location + ' ' + timestamp
 
 	# Puts black box around timestamp
 	#camera.annotate_background = 0x0000ff
 	#camera.annotate_foreground = 0xffff00
 
 	# Set size of stamp, font can be between 6 and 160
-	camera.annotate_text_size = 6
+	#camera.annotate_text_size = 6
 
 	# let camera take in light
 	sleep(1)
