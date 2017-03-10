@@ -50,7 +50,7 @@ def take_pic(camera,filename='/home/pi/TEST.jpg',
 	#camera.annotate_foreground = 0xffff00
 
 	# Set size of stamp, font can be between 6 and 160
-	camera.annotate_text_size = 6
+	#camera.annotate_text_size = 6
 
 	# let camera take in light
 	sleep(1)
