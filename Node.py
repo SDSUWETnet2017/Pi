@@ -28,7 +28,7 @@ class Subnode():
         a function that takes temperature i2c hex val and returns
         a float with temperature in degrees f
         '''
-        self.temperature = ((175.72*temp) / 65536 ) - 46.85
+        self.temperature = ((175.72*int(temp)) / 65536 ) - 46.85
         self.temperature = self.temperature *(9/5)+32
     
         return
@@ -38,7 +38,7 @@ class Subnode():
         a function that takes humidity i2c hex val and returns a
         float with humidity in %
         '''
-        self.humidity = ((125*humidity)/65536)-6
+        self.humidity = ((125*float(humidity))/65536)-6
 
         
         return
@@ -48,7 +48,7 @@ class Subnode():
         a function that takes UV i2c data and returns a float with
         the uv index
         '''
-        self.UV = uv/100
+        self.UV = float(uv)/100
         
         return
 
@@ -57,9 +57,9 @@ class Subnode():
         A funtion that updates the temperature, humidity, and uv vals from
         the UART data. Will be called in main
         '''
-        self.temperture = self.format_temperature(data_vect[1])
-        self.humidity = self.format_humidity(data_vect[2])
-        self.UV = self.format_uv(data_vect[3])
+        self.format_temperature(data_vect[1])
+        self.format_humidity(data_vect[2])
+        self.format_uv(data_vect[3])
         
         self.read = 1
         return
@@ -198,7 +198,6 @@ class Supernode():
         '''
         self.wind_speed = 5.20
         return
-
     def format_windDirection(self,windDirection):
         '''
         Returns the wind duirection
@@ -215,7 +214,6 @@ class Supernode():
 
         self.wind_gust = 5.68
         return
-        
 
     def update(self,data_vect):
         '''
@@ -225,10 +223,10 @@ class Supernode():
         self.get_BME()
         self.get_UV()
         self.take_pic()
-        self.wind_speed = self.format_windSpeed(data_vect[1])
-        self.wind_direction = self.format_windDirection(data_vect[2])
-        self.wind_gust = self.format_windGust(data_vect[3])
-        self.air_quality = self.format_airQuality(data_vect[4])
+        self.format_windSpeed(data_vect[1])
+        self.format_windDirection(data_vect[2])
+        self.format_windGust(data_vect[3])
+        self.format_airQuality(data_vect[4])
 
         return
 

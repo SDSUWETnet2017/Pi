@@ -6,11 +6,13 @@ Supernode main function
 This program collects and parces UART data from PIC and 
 stores formatted data in .json file
 """
+
 import json
 import serial
 import time
-from main_functions import read_data
+from main_functions import read_data, read_start_seq
 from Node import Supernode, Subnode
+import RPi.GPIO as GPIO
 
 '''
 Initialization Code 
@@ -45,15 +47,26 @@ with open('Error_Log.txt','w') as f_obj:
 	f_obj.write(msg)
 	f_obj.close()
 
+# create data dictionary
+data = {}
+
 # Initilaize serial port 
 # RX in pin 10, GPIO 15
 # TX on pin 8, GPIO 14 	
 port = serial.Serial('/dev/serial0', baudrate=9600)
 
-# create data dictionary
-data = {}
+# initialize gpio
+'''
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(21,GPIO.OUT) #GPIO 21 set as output
 
+# see if PIC is ready to read
+GPIO.output(21,GPIO.HIGH)
+read_start_seq(port)
+GPIO.output(21,GPIO.LOW)
 
+'''
 '''
 Action Code 
 '''
@@ -64,18 +77,19 @@ while True:
     node_data = read_data(port)
     if not node_data[0] == 'END':
         # load data into corresponding subnode class
-        subnodes[int(node_data[0])].update(node_data)
+        subnodes[int(node_data[0])-2].update(node_data)
         
     else:
         # load data into supernode class
         supernode.update(node_data)
+        for subnode in subnodes:
+            subnode.check_read()
         data['node 1'] = supernode.return_dict()
         for i in range(len(subnodes)):
             data['node '+str(subnodes[i].number)] = subnodes[i].return_dict()
 
         # check to see if any node was not read and write error in Error Log
-        for subnode in subnodes:
-            subnode.check_read()
+
         # save data dictionary in .json file
         try:
             with open('newdata1.json','w') as f:
