@@ -29,6 +29,7 @@ def read_data(port):
             msg += ' could not store data due to corrupted packet \n'
             f_obj.write(msg)
             f_obj.close()
+            print('In first ret 0\n')
         return 0
    
     # convert string hex vals to int hex vals
@@ -43,7 +44,18 @@ def read_data(port):
                 rv[i] = 0xFFFF
                 
         return rv[1:]
+    elif rv[1] == 'END':
+        for i in range(2,len(rv)):
+            try:
+                rv[i] = int(rv[i],base=16)
+            except ValueError:
+                # if hex element has corrupted val then wrie ffff to
+                # element subnode subclasswill will wrie to log that this val
+                # lost
+                rv[i] = 0xFFFF
+        return rv[1:]
     else:
+        print('In 2nd ret 0\n')
         return 0
 
 

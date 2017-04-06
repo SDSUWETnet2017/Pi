@@ -78,6 +78,7 @@ print('Program started press "ctrl+z" to stop')
 
 while True:
     node_data = read_data(port)
+    print(node_data)
     if not node_data:
         pass
     elif not node_data[0] == 'END':
