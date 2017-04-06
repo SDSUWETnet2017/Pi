@@ -44,6 +44,8 @@ with open('log.txt', 'w') as f_obj:
 # Create Error Log to be read by server
 with open('Error_Log.txt','w') as f_obj:
 	msg = '---Supernode 1 Error Log---\n'
+	msg += '---Program Started ' + time.strftime('%Y-%m-%d %H:%M')
+	msg += ' ---\n'
 	f_obj.write(msg)
 	f_obj.close()
 
@@ -63,22 +65,27 @@ GPIO.setup(21,GPIO.OUT) #GPIO 21 set as output
 
 # see if PIC is ready to read
 GPIO.output(21,GPIO.HIGH)
-read_start_seq(port)
+
 GPIO.output(21,GPIO.LOW)
 
 '''
 '''
 Action Code 
 '''
+read_start_seq(port)
 
 print('Program started press "ctrl+z" to stop')
 
 while True:
     node_data = read_data(port)
-    if not node_data[0] == 'END':
+    if not node_data:
+        pass
+    elif not node_data[0] == 'END':
         # load data into corresponding subnode class
-        subnodes[int(node_data[0])-2].update(node_data)
-        
+        try:
+            subnodes[int(node_data[0])-2].update(node_data)
+        except:
+            pass
     else:
         # load data into supernode class
         supernode.update(node_data)
