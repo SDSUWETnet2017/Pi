@@ -1,7 +1,14 @@
 '''
 Weather Engineering Team
-2017/03/17
+Initail Creation : 2017/03/17
 Classes to model the Sub and Super nodes in the weather network
+
+Exception handeling:
+    -If a packet is lost or corrupted the Subnode class will
+    retain its current reading.
+    -If 1 element of the packet is corrupted its value will be changed to
+    0xFFFF and the Subnode class will retain its past reading.
+    
 '''
 from Adafruit_BME280 import *
 import RPi.GPIO as GPIO
@@ -10,6 +17,7 @@ from time import sleep
 import time
 import base64
 import SI1145 as SI1145
+from main_functions import *
 
 class Subnode():
     '''
@@ -27,9 +35,22 @@ class Subnode():
         '''
         a function that takes temperature i2c hex val and returns
         a float with temperature in degrees f
+
+        This code is for converting BME 280 i2c temperature values
         '''
-        self.temperature = ((175.72*int(temp)) / 65536 ) - 46.85
-        self.temperature = self.temperature *(9/5)+32
+        # float in Python is double precision
+        if temp == 0xFFFF:
+            self.write_errlog_reading('temperature')
+        
+        else:
+            # need to add code for BME 280
+            self.temperature = 25.0
+            # convert to F
+            self.temperature = self.temperature *(9/5)+32
+            # code commented out for old si chip we didnt use 
+            #self.temperature = ((175.72*int(temp)) / 65536 ) - 46.85
+        
+        
     
         return
 
@@ -37,9 +58,17 @@ class Subnode():
         '''
         a function that takes humidity i2c hex val and returns a
         float with humidity in %
-        '''
-        self.humidity = ((125*float(humidity))/65536)-6
 
+        This code is for converting BME 280 i2c humidity values
+        '''
+
+        # code commented out is for old si humididty sensor we didnt use
+        # self.humidity = ((125*float(humidity))/65536)-6
+
+        if humidity == 0xFFFF:
+            self.write_errlog_reading('humidity')
+        else:
+            self.humidity = 20.5
         
         return
 
@@ -48,7 +77,10 @@ class Subnode():
         a function that takes UV i2c data and returns a float with
         the uv index
         '''
-        self.UV = float(uv)/100
+        if UV == 0xFFFF:
+            self.write_errlog_reading('UV index')
+        else:
+            self.UV = float(uv)/100
         
         return
 
@@ -71,7 +103,8 @@ class Subnode():
         '''
         
         data_dict = {}
-        timestamp = time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        # timestamp = time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        timestamp = get_time_stamp()
         data_vect = [self.temperature, self.humidity, self.UV]
         data_dict[timestamp] = data_vect
 
@@ -92,6 +125,20 @@ class Subnode():
                 f.write(msg)
         
         return 
+
+    def write_errlog_reading(self,reading='string'):
+        '''
+        A function that writes the log if a sensor value gets corrupted
+        '''
+        
+        msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        msg += ' NODE ' + str(self.number) +' recieved corrupted reading for '
+        msg += reading + ' retaining last reading'
+        with open(filename,'a') as f:
+            f.write(msg)
+            
+        return
+    
 
 
 class Supernode():
@@ -179,7 +226,6 @@ class Supernode():
 	with open(filename,"rb") as imageFile:
 	# converts to str
 		self.pic = base64.b64encode(imageFile.read())
-		
         return
 
     def get_UV(self):
@@ -239,7 +285,8 @@ class Supernode():
         data_vect = [self.temperature,self.humidity,self.UV,self.pressure,
                      self.wind_speed,self.wind_direction, self.wind_gust,
                      self.pic, self.air_quality]
-        timestamp = time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        #timestamp = time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        timestamp = get_time_stamp()
         data_dict[timestamp] = data_vect
         
         return data_dict

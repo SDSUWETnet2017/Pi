@@ -70,9 +70,22 @@ def read_start_seq(port):
     while True:
         ch = port.read()
         rv += ch
-        print(ch)
+        #print('.')
         #port.write(str.encode("U"))
         if "X" and 'U' in rv:
             return
 
-
+def get_time_stamp():
+    '''
+    A function that generates a timestamp in the form
+    YYYY/MM/DD HH:mm if a number is less than 10 it will
+    not be 0 padded 
+    '''
+    
+    time_struct = time.localtime()
+    timestamp = str(time_struct[1]) + '/' +str(time_struct[2])+'/'
+    timestamp += str(time_struct[0]) + ' ' + str(time_struct[3])
+    timestamp += ':' + str(time_struct[4])
+    return timestamp
+    
+    
