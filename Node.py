@@ -152,9 +152,9 @@ class Supernode():
         self.pressure = 0
         self.UV = 0
         self.pic = ''
-        self.air_quality = 0
+        self.air_quality = 'No Reading'
         self.wind_speed = 0
-        self.wind_direction = 0
+        self.wind_direction = 'NA'
         self.wind_gust = 0
         
         # initialize sensors
@@ -187,12 +187,20 @@ class Supernode():
 
     def format_airQuality(self,airQuality):
         '''
-        This function conversts the I2C hexadecimal value to the air
-        quality in floating point representation
+        This function conversts the adc hexadecimal value to the air
+        quality in string 
 
         '''
-        self.air_quality = (363.32*(airQuality-13/4))-0.75
-        
+        if airQuality == 0x0001:
+            self.air_quality = 'Good Air'
+        elif airQuality == 0x0010:
+            self.air_quality = 'Moderate Air'
+        elif airQuality == 0x0100:
+            self.air_quality = '(USG) Unhealthy for Sensitive Groups'
+        elif airQuality == 0x1000:
+            self.air_quality = 'Unhealthy'
+        else
+            self.write_errlog_reading('Air Quality') 
         return
 
     def take_pic(self,filename='/home/pi/pic.jpg',
@@ -249,7 +257,7 @@ class Supernode():
         Returns the wind duirection
         '''
 
-        self.wind_direction = 30
+        self.wind_direction = 'NA'
         return
 
     def format_windGust(self,windGust):
@@ -291,4 +299,13 @@ class Supernode():
         
         return data_dict
 
-
+    def write_errlog_reading(self,reading='string'):
+        '''
+        A function that writes the log if a sensor value gets corrupted
+        '''
+        msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        msg += ' NODE ' + str(self.number) +' recieved corrupted reading for '
+        msg += reading + ' retaining last reading'
+        with open(filename,'a') as f:
+            f.write(msg) 
+        return
