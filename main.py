@@ -10,7 +10,7 @@ stores formatted data in .json file
 import json
 import serial
 import time
-from main_functions import read_data, read_start_seq
+from main_functions import *
 from Node import Supernode, Subnode
 import RPi.GPIO as GPIO
 
@@ -69,6 +69,7 @@ GPIO.output(21,GPIO.HIGH)
 GPIO.output(21,GPIO.LOW)
 
 '''
+
 '''
 Action Code 
 '''
@@ -86,6 +87,7 @@ while True:
         # load data into corresponding subnode class
         
         try:
+            print('in update')
             subnodes[int(node_data[0])-2].update(node_data)
         except:
             pass

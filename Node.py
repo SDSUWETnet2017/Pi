@@ -116,7 +116,7 @@ class Subnode():
         write and error log if it was not. functon called from main
         '''
         
-        if not self.read:
+        if self.read == 0:
             msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
             msg += ' NODE ' + str(self.number) +' NOT READ\n'
             with open(filename,'a') as f:
@@ -131,8 +131,8 @@ class Subnode():
         
         msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
         msg += ' NODE ' + str(self.number) +' recieved corrupted reading for '
-        msg += reading + ' retaining last reading'
-        with open(filename,'a') as f:
+        msg += reading + ' retaining last reading\n'
+        with open('Error_Log.txt','a') as f:
             f.write(msg)
             
         return
@@ -181,7 +181,7 @@ class Supernode():
             self.humidity = self.sensor_BME.read_humidity()
             self.pressure = self.sensor_BME.read_pressure()
         except:
-            self.write_errlog_sensor(self,"BME280")
+            self.write_errlog_sensor("BME280")
         return
 
     def format_airQuality(self,airQuality):
@@ -198,7 +198,7 @@ class Supernode():
             self.air_quality = '(USG) Unhealthy for Sensitive Groups'
         elif airQuality == 0x1000:
             self.air_quality = 'Unhealthy'
-        else
+        else:
             self.write_errlog_reading('Air Quality') 
         return
 
@@ -234,7 +234,7 @@ class Supernode():
             #    converts jpg to str
                	self.pic = base64.b64encode(imageFile.read())
         except:
-            self.write_errlog_sensor(self,"Camera")
+            self.write_errlog_sensor("Camera")
             
         return
 
@@ -246,7 +246,7 @@ class Supernode():
         try:
             self.UV = self.uv_sensor.readUV()/100
         except:
-            write_errlog_sensor(self,"SI1145")
+            write_errlog_sensor("SI1145")
 
         return
     
@@ -322,25 +322,25 @@ class Supernode():
         
         return data_dict
 
-    def write_errlog_reading(self,reading='string'):
+    def write_errlog_reading(self,reading='string',filename='Error_Log.txt'):
         '''
         A function that writes the log if a sensor value from PIC gets corrupted
         '''
         msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
         msg += ' NODE ' + str(self.number) +' recieved corrupted reading for '
-        msg += reading + ' retaining last reading'
+        msg += reading + ' retaining last reading\n'
         with open(filename,'a') as f:
             f.write(msg) 
         return
 
-    def write_errlog_sensor(self,sensor):
+    def write_errlog_sensor(self,sensor,filename='Error_Log.txt'):
         '''
         A function that writes the log if a sensor gets disconnected
         from PI
         '''
         msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
         msg += ' ' + sensor + ' has been disconnected from PI, please reconnect,'
-        msg += ' retaining last reading'
+        msg += ' retaining last reading\n'
         with open(filename,'a') as f:
             f.write(msg) 
         return

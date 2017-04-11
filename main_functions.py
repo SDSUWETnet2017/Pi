@@ -70,7 +70,7 @@ def read_start_seq(port):
     while True:
         ch = port.read()
         rv += ch
-        #print('.')
+        print(ch)
         #port.write(str.encode("U"))
         if "X" and 'U' in rv:
             return
@@ -104,9 +104,11 @@ def sync_PIC(port,period_end,period=10):
     if abs(delta_t) < 1:
         return
     elif delta_t > 0:
+        print('subtracting from pic clk')
         port.write(str.encode('-'))
         return
     elif delta_t < 0:
+        print('adding to pic clk')
         port.write(str.encode('+'))
         return
     return
