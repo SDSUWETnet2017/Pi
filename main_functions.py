@@ -29,7 +29,7 @@ def read_data(port):
             msg += ' could not store data due to corrupted packet \n'
             f_obj.write(msg)
             f_obj.close()
-            print('In first ret 0\n')
+            #print('In first ret 0\n')
         return 0
    
     # convert string hex vals to int hex vals
@@ -55,7 +55,7 @@ def read_data(port):
                 rv[i] = 0xFFFF
         return rv[1:]
     else:
-        print('In 2nd ret 0\n')
+        #print('In 2nd ret 0\n')
         return 0
 
 
@@ -78,7 +78,7 @@ def read_start_seq(port):
 def get_time_stamp():
     '''
     A function that generates a timestamp in the form
-    YYYY/MM/DD HH:mm if a number is less than 10 it will
+    MM/DD/YYYY HH:mm if a number is less than 10 it will
     not be 0 padded 
     '''
     
@@ -87,5 +87,32 @@ def get_time_stamp():
     timestamp += str(time_struct[0]) + ' ' + str(time_struct[3])
     timestamp += ':' + str(time_struct[4])
     return timestamp
+
+def sync_PIC(port,period_end,period=10):
+    """
+    This function compares the end cycle given from pic to PI time and
+    sends a + or - to the PIC over UART if the PI needs to adjust its clock.
+    If pic time is correct no signal will be sent.
+
+    If end period is 1s over then the pic clock will be adjusted by 0.5s
+    """
+
+    # get time of end cycle and compare it to 10 minutes
+    # delta_t is time difference between 10 minutes what the pic is
+    delta_t = time.time() - period_end - (period * 60)
+    
+    if abs(delta_t) < 1:
+        return
+    elif delta_t > 0:
+        port.write(str.encode('-'))
+        return
+    elif delta_t < 0:
+        port.write(str.encode('+'))
+        return
+    return
+        
+        
+
+    
     
     

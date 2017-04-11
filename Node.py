@@ -49,9 +49,7 @@ class Subnode():
             self.temperature = self.temperature *(9/5)+32
             # code commented out for old si chip we didnt use 
             #self.temperature = ((175.72*int(temp)) / 65536 ) - 46.85
-        
-        
-    
+
         return
 
     def format_humidity(self,humidity):
@@ -177,12 +175,13 @@ class Supernode():
         This is the function that is going to return temperature, humidity
         and pressure from the BME280 sensor
         '''
-
-        self.temperature = self.sensor_BME.read_temperature()
-        self.temperature = self.temperature *(9/5)+32
-        self.humidity = self.sensor_BME.read_humidity()
-        self.pressure = self.sensor_BME.read_pressure()
-        
+        try:
+            self.temperature = self.sensor_BME.read_temperature()
+            self.temperature = self.temperature *(9/5)+32
+            self.humidity = self.sensor_BME.read_humidity()
+            self.pressure = self.sensor_BME.read_pressure()
+        except:
+            self.write_errlog_sensor(self,"BME280")
         return
 
     def format_airQuality(self,airQuality):
@@ -218,22 +217,25 @@ class Supernode():
 	f.write(base64.b64decode(im_str)
 	f.close()
         """
-
-        self.camera.resolution = resolution
+        try:
+            self.camera.resolution = resolution
 	
-	# rotate image
-	self.camera.rotation = rotation
-	self.camera.start_preview()
-	self.camera.brightness = brightness
+            # rotate image
+            self.camera.rotation = rotation
+            self.camera.start_preview()
+            self.camera.brightness = brightness
         
-	# save pic
-	self.camera.capture(filename)
-	self.camera.stop_preview()
-
-	# encode .jpg file as string
-	with open(filename,"rb") as imageFile:
-	# converts to str
-		self.pic = base64.b64encode(imageFile.read())
+            # save pic
+            self.camera.capture(filename)
+            self.camera.stop_preview()
+    
+            # encode .jpg file as string
+            with open(filename,"rb") as imageFile:
+            #    converts jpg to str
+               	self.pic = base64.b64encode(imageFile.read())
+        except:
+            self.write_errlog_sensor(self,"Camera")
+            
         return
 
     def get_UV(self):
@@ -241,8 +243,10 @@ class Supernode():
         '''
         This function returns the UV value read from SI1145 sensor
         '''
-
-        self.UV = self.uv_sensor.readUV()/100
+        try:
+            self.UV = self.uv_sensor.readUV()/100
+        except:
+            write_errlog_sensor(self,"SI1145")
 
         return
     
@@ -250,14 +254,33 @@ class Supernode():
         '''
         This function returns the windspeed
         '''
-        self.wind_speed = 5.20
+        
+        self.windspeed = int(windSpeed)
+        
         return
+    
     def format_windDirection(self,windDirection):
         '''
-        Returns the wind duirection
+        Returns the wind duirection given hex value from pic
         '''
-
-        self.wind_direction = 'NA'
+        if windDirection == 0x80:
+            self.wind_direction = 'N'
+        elif windDirection == 0x60:
+            self.wind_direction = 'NW'
+        elif windDirection == 0x40:
+            self.wind_direction = 'W'
+        elif windDirection == 0x20:
+            self.wind_direction = 'SW'
+        elif windDirection == 0xFF:
+            self.wind_direction = 'S'
+        elif windDirection == 0xDF:
+            self.wind_direction = 'SE'
+        elif windDirection == 0xBF:
+            self.wind_direction = 'E'
+        elif windDirection == 0x9F:
+            self.wind_direction = 'NE'
+        else:
+            pass
         return
 
     def format_windGust(self,windGust):
@@ -266,7 +289,7 @@ class Supernode():
         and converts it to float
         '''
 
-        self.wind_gust = 5.68
+        self.wind_gust = windGust
         return
 
     def update(self,data_vect):
@@ -301,7 +324,7 @@ class Supernode():
 
     def write_errlog_reading(self,reading='string'):
         '''
-        A function that writes the log if a sensor value gets corrupted
+        A function that writes the log if a sensor value from PIC gets corrupted
         '''
         msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
         msg += ' NODE ' + str(self.number) +' recieved corrupted reading for '
@@ -309,3 +332,18 @@ class Supernode():
         with open(filename,'a') as f:
             f.write(msg) 
         return
+
+    def write_errlog_sensor(self,sensor):
+        '''
+        A function that writes the log if a sensor gets disconnected
+        from PI
+        '''
+        msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
+        msg += ' ' + sensor + ' has been disconnected from PI, please reconnect,'
+        msg += ' retaining last reading'
+        with open(filename,'a') as f:
+            f.write(msg) 
+        return
+
+        
+    

@@ -19,7 +19,7 @@ Initialization Code
 '''
 
 # Node Latitudes and Longitudes in order
-
+# need to take these out once .json config file on volta
 latitudes = [32.775660,32.776315,32.776075,32.775567,32.775881]
                  
 longitudes = [-117.071543, -117.071475,-117.071910,-117.071914,
@@ -75,19 +75,25 @@ Action Code
 read_start_seq(port)
 
 print('Program started press "ctrl+z" to stop')
-
+t1 = time.time()
 while True:
+    
     node_data = read_data(port)
     print(node_data)
     if not node_data:
         pass
     elif not node_data[0] == 'END':
         # load data into corresponding subnode class
+        
         try:
             subnodes[int(node_data[0])-2].update(node_data)
         except:
             pass
     else:
+
+        # reset period timer and send sig to pic to update clk if needed
+        sync_PIC(port,t1,10)
+        t1 = time.time() # reset cycle 
         # load data into supernode class
         supernode.update(node_data)
         for subnode in subnodes:
