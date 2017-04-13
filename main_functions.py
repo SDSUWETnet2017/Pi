@@ -36,7 +36,7 @@ def read_data(port):
     if len(rv) < 6:
         for i in range(2,len(rv)):
             try:
-                rv[i] = int(rv[i],base=16)
+                rv[i] = float(rv[i])
             except ValueError:
                 # if hex element has corrupted val then wrie ffff to
                 # element subnode subclasswill will wrie to log that this val
@@ -66,14 +66,24 @@ def read_start_seq(port):
     PIC
     '''
     print("\nWaiting to Pair with PIC")
+    node = 2
+    comparison = "Node " + str(node) + " Paired" #Node %c Paired" sent from pic
     rv = ''
     while True:
         ch = port.read()
         rv += ch
-        print(ch)
+        #print(ch)
         #port.write(str.encode("U"))
-        if "X" and 'U' in rv:
-            return
+        
+        if comparison in rv:
+            print(comparison +"\n")
+            writeLog(comparison)
+            node += 1
+            comparison = "Node " + str(node) + " Paired" #Node %c Paired" sent from pic
+            if node == 6:
+                return
+
+            
 
 def get_time_stamp():
     '''
@@ -104,17 +114,21 @@ def sync_PIC(port,period_end,period=10):
     if abs(delta_t) < 1:
         return
     elif delta_t > 0:
-        print('subtracting from pic clk')
+        #print('subtracting from pic clk')
         port.write(str.encode('-'))
         return
     elif delta_t < 0:
-        print('adding to pic clk')
+        #print('adding to pic clk')
         port.write(str.encode('+'))
         return
     return
         
-        
-
+def writeLog(msg):
+    log = '--' + time.strftime('%Y-%m-%d %H:%M')
+    log += ' ' + msg
+    with open('log.txt', 'a') as f_obj:
+	f_obj.write(log)
+	f_obj.close()
     
     
     

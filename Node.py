@@ -44,9 +44,9 @@ class Subnode():
         
         else:
             # need to add code for BME 280
-            self.temperature = 25.0
+            self.temperature = temp
             # convert to F
-            self.temperature = self.temperature *(9/5)+32
+            # self.temperature = self.temperature *(9/5)+32
             # code commented out for old si chip we didnt use 
             #self.temperature = ((175.72*int(temp)) / 65536 ) - 46.85
 
@@ -66,8 +66,7 @@ class Subnode():
         if humidity == 0xFFFF:
             self.write_errlog_reading('humidity')
         else:
-            self.humidity = 20.5
-        
+            self.humidity = humidity
         return
 
     def format_uv(self,uv):
@@ -78,7 +77,7 @@ class Subnode():
         if UV == 0xFFFF:
             self.write_errlog_reading('UV index')
         else:
-            self.UV = float(uv)/100
+            self.UV = uv
         
         return
 
@@ -217,6 +216,7 @@ class Supernode():
 	f.write(base64.b64decode(im_str)
 	f.close()
         """
+        #print('in take pic')
         try:
             self.camera.resolution = resolution
 	
@@ -297,6 +297,7 @@ class Supernode():
         This function updates all the sensor values or pictures onto a
         data vector
         '''
+        print(' In supernode update')
         self.get_BME()
         self.get_UV()
         self.take_pic()

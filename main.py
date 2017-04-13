@@ -87,12 +87,12 @@ while True:
         # load data into corresponding subnode class
         
         try:
-            print('in update')
+            #print('in update subonode data')
             subnodes[int(node_data[0])-2].update(node_data)
         except:
             pass
     else:
-
+        #print('write to .json\n')
         # reset period timer and send sig to pic to update clk if needed
         sync_PIC(port,t1,10)
         t1 = time.time() # reset cycle 
