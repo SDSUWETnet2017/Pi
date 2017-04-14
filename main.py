@@ -87,9 +87,11 @@ while True:
         # load data into corresponding subnode class
         
         try:
-            #print('in update subonode data')
+            print('in update subonode data')
             subnodes[int(node_data[0])-2].update(node_data)
+            subnodes[int(node_data[0])-2].read = 1
         except:
+            
             pass
     else:
         #print('write to .json\n')

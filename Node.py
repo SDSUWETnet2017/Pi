@@ -86,11 +86,12 @@ class Subnode():
         A funtion that updates the temperature, humidity, and uv vals from
         the UART data. Will be called in main
         '''
+        self.read = 1
         self.format_temperature(data_vect[1])
         self.format_humidity(data_vect[2])
         self.format_uv(data_vect[3])
         
-        self.read = 1
+        
         return
     
     def return_dict(self):
@@ -115,7 +116,7 @@ class Subnode():
         write and error log if it was not. functon called from main
         '''
         
-        if self.read == 0:
+        if (self.read == 0):
             msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
             msg += ' NODE ' + str(self.number) +' NOT READ\n'
             with open(filename,'a') as f:

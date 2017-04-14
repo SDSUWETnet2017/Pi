@@ -8,7 +8,7 @@ def read_data(port):
     rv = ''
     while True:
         ch = port.read()
-        print(ch)
+        #print(ch)
         if ch =='U' or len(rv) > 30:
             break
         else:
@@ -21,8 +21,10 @@ def read_data(port):
         if rv[1] == 'END':
             pass
         else:
-            rv[1] == int(rv[1][-1],base=10) #int(rv[0],base=10)
+            print('subnode\n')
+            rv[1] == int(rv[1],base=10) #int(rv[0],base=10)
     except:
+        print('Could not store data due to corrupted packet\n')
         with open('Error_Log.txt','a') as f_obj:
             print('could not store data due to corrupted packet \n')
             msg = '- ' + time.strftime('%Y-%m-%d %H:%M',time.localtime())
@@ -38,6 +40,7 @@ def read_data(port):
             try:
                 rv[i] = float(rv[i])
             except ValueError:
+                print('In value error\n')
                 # if hex element has corrupted val then wrie ffff to
                 # element subnode subclasswill will wrie to log that this val
                 # lost
