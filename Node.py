@@ -247,7 +247,7 @@ class Supernode():
         try:
             self.UV = self.uv_sensor.readUV()/100
         except:
-            write_errlog_sensor("SI1145")
+           self.write_errlog_sensor("SI1145")
 
         return
     
@@ -298,7 +298,7 @@ class Supernode():
         This function updates all the sensor values or pictures onto a
         data vector
         '''
-        print(' In supernode update')
+        #print(' In supernode update')
         self.get_BME()
         self.get_UV()
         self.take_pic()

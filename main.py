@@ -81,13 +81,14 @@ while True:
     
     node_data = read_data(port)
     print(node_data)
+    print('time in period : ',((time.time()-t1)/60))
     if not node_data:
         pass
     elif not node_data[0] == 'END':
         # load data into corresponding subnode class
         
         try:
-            print('in update subonode data')
+            #print('in update subonode data')
             subnodes[int(node_data[0])-2].update(node_data)
             subnodes[int(node_data[0])-2].read = 1
         except:

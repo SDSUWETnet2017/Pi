@@ -15,13 +15,13 @@ def read_data(port):
             rv += ch
     # split data string into an array by looking for spaces
     rv = rv.split(' ')
-    print(rv)
+    print(rv[1:])
     # if supernode data don't convert first element to int
     try:
         if rv[1] == 'END':
             pass
         else:
-            print('subnode\n')
+            #print('subnode\n')
             rv[1] == int(rv[1],base=10) #int(rv[0],base=10)
     except:
         print('Could not store data due to corrupted packet\n')
@@ -68,7 +68,7 @@ def read_start_seq(port):
     A function that lets the PI know when to start reading data from
     PIC
     '''
-    print("\nWaiting to Pair with PIC")
+    print("\nWaiting to Pair with Subnodes")
     node = 2
     comparison = "Node " + str(node) + " Paired" #Node %c Paired" sent from pic
     rv = ''
@@ -79,7 +79,7 @@ def read_start_seq(port):
         #port.write(str.encode("U"))
         
         if comparison in rv:
-            print(comparison +"\n")
+            print(comparison)
             writeLog(comparison)
             node += 1
             comparison = "Node " + str(node) + " Paired" #Node %c Paired" sent from pic
