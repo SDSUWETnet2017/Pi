@@ -1,12 +1,7 @@
 ---Supernode 1 Error Log---
----Program Started 2017-04-16 13:14 ---
-- 2017-04-16 13:24 Camera has been disconnected from PI, please reconnect, retaining last reading
-- 2017-04-16 13:24 NODE 1 recieved corrupted reading for Air Quality retaining last reading
-- 2017-04-16 13:24 NODE 3 NOT READ
-- 2017-04-16 13:24 NODE 4 NOT READ
-- 2017-04-16 13:24 NODE 5 NOT READ
-- 2017-04-16 13:28 NODE 3 recieved corrupted reading for temperature retaining last reading
-- 2017-04-16 13:33 Camera has been disconnected from PI, please reconnect, retaining last reading
-- 2017-04-16 13:33 NODE 1 recieved corrupted reading for Air Quality retaining last reading
-- 2017-04-16 13:33 NODE 4 NOT READ
-- 2017-04-16 13:33 NODE 5 NOT READ
+---Program Started 2017-04-18 17:20 ---
+- 2017-04-18 17:31 Camera has been disconnected from PI, please reconnect, retaining last reading
+- 2017-04-18 17:31 NODE 1 recieved corrupted reading for Air Quality retaining last reading
+- 2017-04-18 17:31 NODE 3 NOT READ
+- 2017-04-18 17:31 NODE 4 NOT READ
+- 2017-04-18 17:31 NODE 5 NOT READ

@@ -55,7 +55,7 @@ data = {}
 # Initilaize serial port 
 # RX in pin 10, GPIO 15
 # TX on pin 8, GPIO 14 	
-port = serial.Serial('/dev/serial0', baudrate=9600)
+port = serial.Serial("/dev/serial0", baudrate=9600)
 
 # initialize gpio
 '''
@@ -103,15 +103,15 @@ while True:
         supernode.update(node_data)
         for subnode in subnodes:
             subnode.check_read()
-        data['node 1'] = supernode.return_dict()
+        data['node 6'] = supernode.return_dict()
         for i in range(len(subnodes)):
-            data['node '+str(subnodes[i].number)] = subnodes[i].return_dict()
+            data['node '+str(subnodes[i].number+5)] = subnodes[i].return_dict()
 
         # check to see if any node was not read and write error in Error Log
 
         # save data dictionary in .json file
         try:
-            with open('newdata1.json','w') as f:
+            with open('newdata2.json','w') as f:
                 json.dump(data,f)
         except:
             with open('Error_Log.txt', 'a') as f:
