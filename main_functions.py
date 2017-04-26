@@ -45,7 +45,8 @@ def read_data(port):
                 # element subnode subclasswill will wrie to log that this val
                 # lost
                 rv[i] = 0xFFFF
-                
+#        print("rv aft conversions")
+        #print(rv[1:])
         return rv[1:]
     elif rv[1] == 'END':
         for i in range(2,len(rv)):
@@ -112,22 +113,22 @@ def sync_PIC(port,period_end,period=10):
 
     # get time of end cycle and compare it to 10 minutes
     # delta_t is time difference between 10 minutes what the pic is
-    delta_t = time.time() - period_end - (period * 60)
+    delta_t = time.time() - period_end # - (period * 60)
     
-    if abs(delta_t) < 1:
+    if abs(delta_t) < 10:
         return
-    elif delta_t > 0:
+    elif delta_t < 0:
         #print('subtracting from pic clk')
         port.write(str.encode('-'))
         return
-    elif delta_t < 0:
+    elif delta_t > 0:
         #print('adding to pic clk')
         port.write(str.encode('+'))
         return
     return
         
 def writeLog(msg):
-    log = '--' + time.strftime('%Y-%m-%d %H:%M')
+    log = '\n--' + time.strftime('%Y-%m-%d %H:%M')
     log += ' ' + msg
     with open('log.txt', 'a') as f_obj:
 	f_obj.write(log)
