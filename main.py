@@ -41,11 +41,12 @@ with open('log.txt', 'w') as f_obj:
 	f_obj.write(msg)
 	f_obj.close()
 	
+time.strftime('%Y-%m-%d %H:%M')
 # Create Error Log to be read by server
 with open('Error_Log.txt','w') as f_obj:
-	msg = '---Supernode 1 Error Log---\n'
+	msg = '---Supernode 2 Error Log---\n'
 	msg += '---Program Started ' + time.strftime('%Y-%m-%d %H:%M')
-	msg += ' ---\n'
+	##msg += ' ---\time.strftime('%Y-%m-%d %H:%M')
 	f_obj.write(msg)
 	f_obj.close()
 
@@ -55,7 +56,7 @@ data = {}
 # Initilaize serial port 
 # RX in pin 10, GPIO 15
 # TX on pin 8, GPIO 14 	
-port = serial.Serial('/dev/serial0', baudrate=9600)
+port = serial.Serial("/dev/serial0", baudrate=9600)
 
 # initialize gpio
 '''
@@ -74,14 +75,18 @@ GPIO.output(21,GPIO.LOW)
 Action Code 
 '''
 read_start_seq(port)
-
+writeLog('Supernode 1')
+writeLog('Program started press "ctrl+z" to stop')
 print('Program started press "ctrl+z" to stop')
+print(time.strftime('%Y-%m-%d %H:%M'))
 t1 = time.time()
 while True:
     
     node_data = read_data(port)
+    writeLog(str(node_data)+' time in period ' + str((time.time()-t1)/60))
     print(node_data)
     print('time in period : ',((time.time()-t1)/60))
+    print('\n')
     if not node_data:
         pass
     elif not node_data[0] == 'END':
@@ -95,7 +100,8 @@ while True:
             
             pass
     else:
-        #print('write to .json\n')
+	print(time.strftime('%Y-%m-%d %H:%M'))
+        print('\n')
         # reset period timer and send sig to pic to update clk if needed
         sync_PIC(port,t1,10)
         t1 = time.time() # reset cycle 
