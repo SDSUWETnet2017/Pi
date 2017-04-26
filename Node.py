@@ -74,11 +74,10 @@ class Subnode():
         a function that takes UV i2c data and returns a float with
         the uv index
         '''
-        if UV == 0xFFFF:
+        if uv > 12:
             self.write_errlog_reading('UV index')
         else:
             self.UV = uv
-        
         return
 
     def update(self, data_vect):
@@ -90,8 +89,6 @@ class Subnode():
         self.format_temperature(data_vect[1])
         self.format_humidity(data_vect[2])
         self.format_uv(data_vect[3])
-        
-        
         return
     
     def return_dict(self):
@@ -174,12 +171,16 @@ class Supernode():
         '''
         This is the function that is going to return temperature, humidity
         and pressure from the BME280 sensor
+
+	Pressure in hPa
+	Humidity in %
+	Temperature in degrees F
         '''
         try:
             self.temperature = self.sensor_BME.read_temperature()
             self.temperature = self.temperature *(9/5)+32
             self.humidity = self.sensor_BME.read_humidity()
-            self.pressure = self.sensor_BME.read_pressure()
+            self.pressure = self.sensor_BME.read_pressure()/100
         except:
             self.write_errlog_sensor("BME280")
         return
@@ -302,10 +303,10 @@ class Supernode():
         self.get_BME()
         self.get_UV()
         self.take_pic()
-        self.format_windSpeed(data_vect[1])
+        self.format_windSpeed(data_vect[3])
         self.format_windDirection(data_vect[2])
-        self.format_windGust(data_vect[3])
-        self.format_airQuality(data_vect[4])
+        self.format_windGust(data_vect[4])
+        self.format_airQuality(data_vect[1])
 
         return
 
@@ -320,6 +321,7 @@ class Supernode():
                      self.pic, self.air_quality]
         #timestamp = time.strftime('%Y-%m-%d %H:%M',time.localtime())
         timestamp = get_time_stamp()
+        writeLog(str(data_vect[:-2])+str(data_vect[8]))
         data_dict[timestamp] = data_vect
         
         return data_dict
